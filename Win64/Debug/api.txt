@@ -1,0 +1,138 @@
+
+---
+
+TRPSystem
+
+---
+  Memory | GET
+
+  WorkTime | GET
+
+  Offline | GET
+
+  Online | GET
+
+  Connections | GET
+
+  DBConnections | GET
+
+  Deactivate | GET
+
+  Log | GET
+
+  Api | GET
+
+  PingContext | GET
+    aId: string
+
+  Create | GET
+
+  Delete | GET
+
+  Update | GET
+
+  GetInfo | GET
+
+
+---
+
+TRPTests
+
+---
+  Exceptions | GET
+
+  PostJson | POST
+
+  SimplePostRequest | GET
+    a: string
+    b: string
+
+  URLEncoded | GET
+    a: string
+    b: string
+
+  Sessions | GET
+
+  PingContext | GET
+
+  MethodWithParams | GET
+    aParam1: string
+    aParam2: string
+
+  HTTPAttribute | GET
+
+  HTTPAttribute | POST
+    aParam: string
+
+  LongTask | GET
+
+  GetLongTaskProgress | GET
+    aGuid: string
+
+  SharedResourceExample | GET
+
+  DBConnection | GET
+
+  Create | GET
+
+  Delete | GET
+
+  Update | GET
+
+  GetInfo | GET
+
+
+---
+
+TRPFiles
+
+---
+  Upload | GET
+
+  Download | GET
+
+  Create | GET
+
+  Delete | GET
+
+  Update | GET
+
+  GetInfo | GET
+
+
+---
+
+TRPMemory
+
+---
+  CurrentProcessMemoryKB | GET
+
+  CurrentProcessMemoryPeakKB | GET
+
+  GetMemory | GET
+    AContext: TIdContext
+    ARequestInfo: TIdHTTPRequestInfo
+    AResponseInfo: TIdHTTPResponseInfo
+
+
+---
+
+TRPUsers
+
+---
+  Create | GET
+
+  Delete | GET
+
+  Update | GET
+
+  GetInfo | GET
+
+  Create | GET
+
+  Delete | GET
+
+  Update | GET
+
+  GetInfo | GET
+
