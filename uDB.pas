@@ -3,10 +3,9 @@ unit uDB;
 interface
 
 uses
-  System.SysUtils, System.Classes, FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf,
-  FireDAC.Stan.Def, FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys, FireDAC.VCLUI.Wait, Data.DB, FireDAC.Comp.Client,
-  FireDAC.Phys.MySQLDef, FireDAC.Phys.MySQL, FireDAC.Stan.Param, FireDAC.DatS, FireDAC.DApt.Intf, FireDAC.DApt, FireDAC.Comp.DataSet,
-  uCommon;
+  System.SysUtils, System.Classes, FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf, FireDAC.Stan.Def, FireDAC.Stan.Pool,
+  FireDAC.Stan.Async, FireDAC.Phys, FireDAC.VCLUI.Wait, Data.DB, FireDAC.Comp.Client, FireDAC.Phys.MySQLDef, FireDAC.Phys.MySQL, FireDAC.Stan.Param, FireDAC.DatS, FireDAC.DApt.Intf,
+  FireDAC.DApt, FireDAC.Comp.DataSet, uCommon, uRSMainModule;
 
 type
   TDB = class(TDataModule)
@@ -61,17 +60,13 @@ begin
         case E.Kind of
           ekUserPwdInvalid:
        // user name or password are incorrect
-            raise Exception.Create('DBConnection Error. User name or password are incorrect' + #13#10 + #13#10 + E.ClassName
-              + ' поднята ошибка, с сообщением : ' + E.Message);
+            raise Exception.Create('DBConnection Error. User name or password are incorrect' + #13#10 + #13#10 + E.ClassName + ' поднята ошибка, с сообщением : ' + E.Message);
           ekUserPwdExpired:
-            raise Exception.Create('DBConnection Error. User password is expired' + #13#10 + #13#10 + E.ClassName +
-              ' поднята ошибка, с сообщением : ' + E.Message);
+            raise Exception.Create('DBConnection Error. User password is expired' + #13#10 + #13#10 + E.ClassName + ' поднята ошибка, с сообщением : ' + E.Message);
           ekServerGone:
-            raise Exception.Create('DBConnection Error. DBMS is not accessible due to some reason' + #13#10 + #13#10 + E.ClassName
-              + ' поднята ошибка, с сообщением : ' + E.Message);
+            raise Exception.Create('DBConnection Error. DBMS is not accessible due to some reason' + #13#10 + #13#10 + E.ClassName + ' поднята ошибка, с сообщением : ' + E.Message);
         else                // other issues
-          raise Exception.Create('DBConnection Error. UnknownMistake' + #13#10 + #13#10 + E.ClassName +
-            ' поднята ошибка, с сообщением : ' + E.Message);
+          raise Exception.Create('DBConnection Error. UnknownMistake' + #13#10 + #13#10 + E.ClassName + ' поднята ошибка, с сообщением : ' + E.Message);
         end;
       on E: Exception do
         raise Exception.Create(E.ClassName + ' поднята ошибка, с сообщением : ' + #13#10 + #13#10 + E.Message);
@@ -97,7 +92,7 @@ end;
 
 procedure TDB.FDConnectionAfterConnect(Sender: TObject);
 begin
-  TMain.GetInstance.DBConnectionsCount := TMain.GetInstance.DBConnectionsCount + 1;
+//  TRSMainModule.GetInstance.DBConnectionsCount := TRSMainModule.GetInstance.DBConnectionsCount + 1;
 end;
 
 procedure TDB.FDConnectionAfterDisconnect(Sender: TObject);

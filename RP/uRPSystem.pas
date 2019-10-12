@@ -3,9 +3,8 @@ unit uRPSystem;
 interface
 
 uses
-  uRP, System.SysUtils, System.Classes, IdCustomHTTPServer, superobject, uCommon, uDB, IdContext, System.NetEncoding,
-  uAttributes, System.JSON, TypInfo, System.Rtti, System.IOUtils, Winapi.PsAPI, Winapi.Windows, Math, IdHeaderList,
-  uRSService, uMain;
+  uRP, System.SysUtils, System.Classes, IdCustomHTTPServer, superobject, uCommon, uDB, IdContext, System.NetEncoding, uAttributes, System.JSON, TypInfo, System.Rtti, System.IOUtils,
+  Winapi.PsAPI, Winapi.Windows, Math, IdHeaderList, uRSService, uMain, uRSMainModule, uPSClasses;
 
 type
   TRPSystem = class(TRP)
@@ -14,14 +13,11 @@ type
     function CurrentProcessMemoryPeakKB: Extended;
   private
     function CloseAllConnections(): boolean;
-    procedure ServerHeadersAvailable(AContext: TIdContext; const AUri: string; AHeaders: TIdHeaderList; var
-      VContinueProcessing: Boolean);
-    procedure ServerHeadersBlocked(AContext: TIdContext; AHeaders: TIdHeaderList; var VResponseNo: Integer; var
-      VResponseText, VContentText: string);
+    procedure ServerHeadersAvailable(AContext: TIdContext; const AUri: string; AHeaders: TIdHeaderList; var VContinueProcessing: Boolean);
+    procedure ServerHeadersBlocked(AContext: TIdContext; AHeaders: TIdHeaderList; var VResponseNo: Integer; var VResponseText, VContentText: string);
     procedure CreateAPIFromClass(aClass: TClass; aApi: TStringList);
   public
-    constructor Create(aContext: TIdContext; aRequestInfo: TIdHTTPRequestInfo; aResponseInfo: TIdHTTPResponseInfo);
-      overload; override;
+    constructor Create(aContext: TIdContext; aRequestInfo: TIdHTTPRequestInfo; aResponseInfo: TIdHTTPResponseInfo); overload; override;
     procedure Memory();
     procedure WorkTime();
     procedure Offline();
@@ -38,6 +34,7 @@ implementation
 
 uses
   IdThreadSafe, Vcl.Forms, uRPTests, uRPFiles, uRPMemory, uRPUsers;
+
 { TRPApi }
 
 procedure TRPSystem.Api;
@@ -79,7 +76,7 @@ var
 begin
   Result := false;
 
-  c := TMain.GetInstance.Server.Contexts;
+  c := TRSMainModule.GetInstance.Server.Contexts;
   if c = nil then
     Exit();
 
@@ -97,13 +94,13 @@ procedure TRPSystem.Connections;
 var
   jo: ISuperObject;
 begin
-  with TMain.GetInstance.Server.Contexts.LockList() do
+  with TRSMainModule.GetInstance.Server.Contexts.LockList() do
   try
     jo := SO;
-    jo.I['connections'] := TMain.GetInstance.Server.Contexts.Count;
+    jo.I['connections'] := TRSMainModule.GetInstance.Server.Contexts.Count;
     FResponses.OkWithJson(jo.AsJSon(false, false));
   finally
-    TMain.GetInstance.Server.Contexts.UnlockList();
+    TRSMainModule.GetInstance.Server.Contexts.UnlockList();
   end;
 end;
 
@@ -157,7 +154,7 @@ end;
 procedure TRPSystem.Deactivate;
 begin
   CloseAllConnections();
-  TMain.GetInstance.Server.Active := false;
+  TRSMainModule.GetInstance.Server.Active := false;
 end;
 
 procedure TRPSystem.Log;
@@ -196,8 +193,8 @@ end;
 
 procedure TRPSystem.Online();
 begin
-  TMain.GetInstance.Server.OnHeadersAvailable := nil;
-  TMain.GetInstance.Server.OnHeadersBlocked := nil;
+  TRSMainModule.GetInstance.Server.OnHeadersAvailable := nil;
+  TRSMainModule.GetInstance.Server.OnHeadersBlocked := nil;
   FResponses.OK();
 end;
 
@@ -209,7 +206,7 @@ var
   someProgress: string;
 begin
   r := false;
-  with TMain.GetInstance.Server.Contexts.LockList() do
+  with TRSMainModule.GetInstance.Server.Contexts.LockList() do
   try
     for i := 0 to Count - 1 do
       if TIdContext(Items[i]).Binding.ID = aId.ToInteger then
@@ -219,7 +216,7 @@ begin
         Break;
       end;
   finally
-    TMain.GetInstance.Server.Contexts.UnlockList();
+    TRSMainModule.GetInstance.Server.Contexts.UnlockList();
   end;
   if r then
   begin
@@ -231,8 +228,8 @@ end;
 
 procedure TRPSystem.Offline();
 begin
-  TMain.GetInstance.Server.OnHeadersAvailable := ServerHeadersAvailable;
-  TMain.GetInstance.Server.OnHeadersBlocked := ServerHeadersBlocked;
+  TRSMainModule.GetInstance.Server.OnHeadersAvailable := ServerHeadersAvailable;
+  TRSMainModule.GetInstance.Server.OnHeadersBlocked := ServerHeadersBlocked;
   FResponses.OK();
 end;
 
@@ -241,12 +238,11 @@ var
   json: ISuperobject;
 begin
   json := SO;
-  json.S['workTime'] := TimeToStr(TMain.GetInstance.Timers.WorkTime);
+  json.S['workTime'] := TimeToStr(TRSMainModule.GetInstance.Timers.WorkTime);
   FResponses.OkWithJson(json.AsJSon(false, false));
 end;
 
-procedure TRPSystem.ServerHeadersAvailable(AContext: TIdContext; const AUri: string; AHeaders: TIdHeaderList; var
-  VContinueProcessing: Boolean);
+procedure TRPSystem.ServerHeadersAvailable(AContext: TIdContext; const AUri: string; AHeaders: TIdHeaderList; var VContinueProcessing: Boolean);
 begin
   if not AUri.contains('System') then
   begin
@@ -254,8 +250,7 @@ begin
   end;
 end;
 
-procedure TRPSystem.ServerHeadersBlocked(AContext: TIdContext; AHeaders: TIdHeaderList; var VResponseNo: Integer; var
-  VResponseText, VContentText: string);
+procedure TRPSystem.ServerHeadersBlocked(AContext: TIdContext; AHeaders: TIdHeaderList; var VResponseNo: Integer; var VResponseText, VContentText: string);
 begin
   VResponseNo := 503;
   VResponseText := 'Service Unavailable';

@@ -3,7 +3,7 @@ unit uRPTests;
 interface
 
 uses
-  System.SysUtils, System.Types, System.Classes, IdCustomHTTPServer, superobject, uCommon, uDB, uRP, IdContext, System.NetEncoding, uAttributes, System.JSON, SyncObjs, uConst;
+  System.SysUtils, System.Types, System.Classes, IdCustomHTTPServer, superobject, uCommon, uDB, uRP, IdContext, System.NetEncoding, uAttributes, System.JSON, SyncObjs, uConst, uRSMainModule;
 
 type
   TRPTests = class(TRP)
@@ -59,23 +59,23 @@ end;
 procedure TRPTests.OnException(aObject: TObject; aClass, aMsg: string);
 begin
 // Notify exception here...
-  with TMain.GetInstance.LongTaskThreads.LockList() do
+  with TRSMainModule.GetInstance.LongTaskThreads.LockList() do
   try
-    TMain.GetInstance.LongTaskThreads.Remove(aObject);
-    TMain.GetInstance.mAnswer.Lines.Add(aClass + ' ' + aMsg);
+    TRSMainModule.GetInstance.LongTaskThreads.Remove(aObject);
+//    TRSMainModule.GetInstance.mAnswer.Lines.Add(aClass + ' ' + aMsg);
   finally
-    TMain.GetInstance.LongTaskThreads.UnlockList();
+    TRSMainModule.GetInstance.LongTaskThreads.UnlockList();
   end;
 end;
 
 procedure TRPTests.OnFinishLongTask(aProgress: double; aMsg: string);
 begin
-  TMain.GetInstance.mAnswer.Lines.Add(aProgress.ToString() + aMsg);
+//  TRSMainModule.GetInstance.mAnswer.Lines.Add(aProgress.ToString() + aMsg);
 end;
 
 procedure TRPTests.OnProgressLongTask(aProgress: double; aMsg: string);
 begin
-  TMain.GetInstance.mAnswer.Lines.Add(aProgress.ToString() + aMsg);
+//  TRSMainModule.GetInstance.mAnswer.Lines.Add(aProgress.ToString() + aMsg);
 end;
 
 procedure TRPTests.OnStartLongTask(aProgress: double; aMsg: string);
@@ -95,7 +95,7 @@ var
   i: integer;
 begin
   p := 0.00;
-  with TMain.GetInstance.LongTaskThreads.LockList() do
+  with TRSMainModule.GetInstance.LongTaskThreads.LockList() do
   try
     for i := 0 to Count - 1 do
       if TLongTaskThread(Items[i]).GuiId = aGuid then
@@ -104,7 +104,7 @@ begin
         break;
       end;
   finally
-    TMain.GetInstance.LongTaskThreads.UnlockList();
+    TRSMainModule.GetInstance.LongTaskThreads.UnlockList();
   end;
   json := SO;
   json.D['progress'] := p;
@@ -164,9 +164,9 @@ begin
   jo.S['lastTimeStamp'] := DateTimeToStr(RequestInfo.Session.LastTimeStamp);
 
 //  LSessionList := TIdHTTPDefaultSessionList(Main.Server.SessionList).LockList;
-  LSessionList := TIdHTTPDefaultSessionList(TMain.GetInstance.Server.SessionList).SessionList.LockList;
+  LSessionList := TIdHTTPDefaultSessionList(TRSMainModule.GetInstance.Server.SessionList).SessionList.LockList;
   jo.S['sessionCount'] := LSessionList.Count.ToString;
-  TIdHTTPDefaultSessionList(TMain.GetInstance.Server.SessionList).SessionList.UnlockList;
+  TIdHTTPDefaultSessionList(TRSMainModule.GetInstance.Server.SessionList).SessionList.UnlockList;
   FResponses.OkWithJson(jo.AsJSon(false, false));
 end;
 
@@ -175,14 +175,14 @@ var
   json: ISuperObject;
   i: Integer;
 begin
-  TMain.GetInstance.CS.Enter();
+  TRSMainModule.GetInstance.CS.Enter();
   try
-    json := SO;
-    for i := 0 to TMain.GetInstance.SomeSharedResource.Count - 1 do
-      json.S['value_' + i.ToString] := TMain.GetInstance.SomeSharedResource.ValueFromIndex[i];
-    FResponses.OkWithJson(json.AsJSon(false, false));
+//    json := SO;
+//    for i := 0 to TRSMainModule.GetInstance.SomeSharedResource.Count - 1 do
+//      json.S['value_' + i.ToString] := TRSMainModule.GetInstance.SomeSharedResource.ValueFromIndex[i];
+//    FResponses.OkWithJson(json.AsJSon(false, false));
   finally
-    TMain.GetInstance.CS.Leave();
+    TRSMainModule.GetInstance.CS.Leave();
   end;
 end;
 
@@ -242,7 +242,7 @@ begin
   t.OnFinish := OnFinishLongTask;
   t.OnException := OnException;
 
-  TMain.GetInstance.LongTaskThreads.Add(t);
+  TRSMainModule.GetInstance.LongTaskThreads.Add(t);
   t.Start();
   if Assigned(t.OnStart) then
     (t.OnStart); // thread started

@@ -7,7 +7,7 @@ uses
   Vcl.Forms, Vcl.Dialogs, IdBaseComponent, IdComponent, IdCustomTCPServer,
   IdCustomHTTPServer, IdHTTPServer, Vcl.StdCtrls, HTTPApp, IdMultipartFormData,
   IdContext, System.IOUtils, System.NetEncoding, superobject, Contnrs, uCommon,
-  System.Generics.Collections, DateUtils, uUniqueName;
+  System.Generics.Collections, DateUtils, uUniqueName, uPSClasses;
 
 type
   TPostParam = record

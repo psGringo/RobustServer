@@ -5,26 +5,9 @@ interface
 uses
   LDSLogger, uConst, System.SysUtils, System.Classes, IdCustomHTTPServer, superobject, IdIOHandler, IdIOHandlerSocket, IdIOHandlerStack, IdSSL, IdSSLOpenSSL, IdMessage,
   IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient, IdExplicitTLSClientServerBase, IdMessageClient, IdSMTPBase, IdSMTP, IdMessageCoderMIME, IdMessageCoder, IdGlobal,
-  HTTPApp, vcl.Forms, System.NetEncoding, IdException, Winapi.Windows;
+  HTTPApp, vcl.Forms, System.NetEncoding, IdException, Winapi.Windows, uRSMainModule, uPSClasses;
 
 type
-  int = integer;
-
-  ISP<T> = reference to function: T;
-
-  TSP<T: class, constructor> = class(TInterfacedObject, ISP<T>)
-  private
-    FValue: T;
-    function Invoke: T;
-    procedure SetValue(const Value: T);
-  public
-    constructor Create; overload;
-    constructor Create(AValue: T); overload;
-    destructor Destroy; override;
-    function Extract: T;
-    property Value: T read FValue write SetValue;
-  end;
-
   TEmail = class(TInterfacedObject)
     procedure Send(aHost: string; aPort: int; aSubject, aEmailContent, aRecipientEmail, aMyEmail, aMyPassword, aFromName: string);
   end;
@@ -87,6 +70,12 @@ type
     property OnProgress: TNotifyLongTask read FOnProgress write FOnProgress;
     property OnFinish: TNotifyLongTask read FOnFinish write FOnFinish;
     property OnException: TNotifyLongTaskException read FOnException write FOnException;
+  end;
+
+  THTTPAttributes = class(TCustomAttribute)
+    FCommandType: string;
+    constructor Create(aCommandType: string); overload;
+    property CommandType: string read FCommandType;
   end;
 
 const
@@ -247,42 +236,6 @@ end;
     end;
     }
 
-{ TSP }
-
-constructor TSP<T>.Create;
-begin
-  inherited Create;
-  FValue := T.Create;
-end;
-
-constructor TSP<T>.Create(AValue: T);
-begin
-  inherited Create;
-  FValue := AValue;
-end;
-
-destructor TSP<T>.Destroy;
-begin
-  FValue.Free;
-  inherited;
-end;
-
-function TSP<T>.Invoke: T;
-begin
-  Result := FValue;
-end;
-
-procedure TSP<T>.SetValue(const Value: T);
-begin
-  FValue := Value;
-end;
-
-function TSP<T>.Extract: T;
-begin
-  Result := FValue;
-  FValue := nil;
-end;
-
 { TResponses }
 
 constructor TResponses.Create(aRequestInfo: TIdHTTPRequestInfo; aResponseInfo: TIdHTTPResponseInfo);
@@ -294,7 +247,7 @@ end;
 procedure TResponses.Deactivate();
 begin
   try
-    TMain.GetInstance.Server.Active := false;
+    TRSMainModule.GetInstance.Server.Active := false;
   except
     on E: EIdException do
       Error(E.Message);
@@ -410,6 +363,13 @@ end;
 function TLongTaskThread.IsTerminated: Boolean;
 begin
   Result := Terminated;
+end;
+
+{ THTTPAttributes }
+
+constructor THTTPAttributes.Create(aCommandType: string);
+begin
+  FCommandType := aCommandType;
 end;
 
 end.

@@ -4,7 +4,7 @@ interface
 
 uses
   System.Classes, IdContext, IdCustomHTTPServer, System.Generics.Collections, superobject, System.NetEncoding, System.IOUtils, Vcl.Forms, uUniqueName, uDB, uCommon,
-  Spring.Collections, uRP, IdException;
+  Spring.Collections, uRP, IdException, uPSClasses;
 
 type
   TCommandGet = class
@@ -40,7 +40,7 @@ begin
   FUniqueModuleNames.Add(RP_Users, TRPUsers);
   FUniqueModuleNames.Add(RP_Tests, TRPTests);
   FUniqueModuleNames.Add(RP_Files, TRPFiles);
-  FUniqueModuleNames.Add(RP_System, TRPSystem);
+//  FUniqueModuleNames.Add(RP_System, TRPSystem);
   // fire
   Execute();
 end;

@@ -25,7 +25,7 @@ var
 
 implementation
 
-uses uMain;
+uses uRSMainModule;
 
 {%CLASSGROUP 'Vcl.Controls.TControl'}
 {$R *.dfm}
@@ -44,19 +44,18 @@ end;
 
 procedure TRobustService.ServiceCreate(Sender: TObject);
 begin
-   FMainInstance := TMain.Create(Self);
-//  FMain := TMain.Create(Self);
+   FMainInstance := TRSMainModule.Create(Self, true);
 end;
 
 procedure TRobustService.ServiceStart(Sender: TService; var Started: Boolean);
 begin
-  TMain(FMainInstance).Start();
+  TRSMainModule(FMainInstance).Start();
   Started := true;
 end;
 
 procedure TRobustService.ServiceStop(Sender: TService; var Stopped: Boolean);
 begin
-  TMain(FMainInstance).Stop();
+  TRSMainModule(FMainInstance).Stop();
   Stopped := true;
 end;
 

@@ -107,7 +107,7 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
         <DCC_DcuOutput>.\$(Platform)\$(Config)\dcu</DCC_DcuOutput>
-        <DCC_UnitSearchPath>.\$(Platform)\$(Config)\dcu;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_UnitSearchPath>.\$(Platform)\$(Config)\dcu;$(DCM)\superobject-master;$(DCM)\sglienke-spring4d\Source;$(DCM)\sglienke-spring4d\Source\Base;$(DCM)\sglienke-spring4d\Source\Base\Collections;$(DCM)\sglienke-spring4d\Source\Base\Logging;$(DCM)\sglienke-spring4d\Source\Base\Patches;$(DCM)\sglienke-spring4d\Source\Core\Container;$(DCM)\sglienke-spring4d\Source\Core\Interception;$(DCM)\sglienke-spring4d\Source\Core\Logging;$(DCM)\sglienke-spring4d\Source\Core\Mocking;$(DCM)\sglienke-spring4d\Source\Core\Services;$(DCM)\sglienke-spring4d\Source\Data\ObjectDataSet;$(DCM)\sglienke-spring4d\Source\Extensions\Cryptography;$(DCM)\sglienke-spring4d\Source\Extensions\Utils;$(DCM)\sglienke-spring4d\Source\Persistence\Adapters;$(DCM)\sglienke-spring4d\Source\Persistence\Core;$(DCM)\sglienke-spring4d\Source\Persistence\Criteria;$(DCM)\sglienke-spring4d\Source\Persistence\Mapping;$(DCM)\sglienke-spring4d\Source\Persistence\SQL;$(DCM);$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <DCC_MapFile>3</DCC_MapFile>
         <Debugger_RunParams>exe</Debugger_RunParams>
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
@@ -143,7 +143,6 @@
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
         <DCCReference Include="RP\uRPMemory.pas"/>
-        <DCCReference Include="LDSLogger.pas"/>
         <DCCReference Include="uCommon.pas"/>
         <DCCReference Include="RP\uRPUsers.pas"/>
         <DCCReference Include="uDecodePostRequest.pas"/>
@@ -156,13 +155,17 @@
         <DCCReference Include="uConst.pas"/>
         <DCCReference Include="RP\uRP.pas"/>
         <DCCReference Include="RP\uRPTests.pas"/>
-        <DCCReference Include="uAttributes.pas"/>
         <DCCReference Include="RP\uRPFiles.pas"/>
         <DCCReference Include="uRSService.pas">
             <Form>RobustService</Form>
         </DCCReference>
         <DCCReference Include="RP\uRPSystem.pas">
             <Form>$R *.res</Form>
+        </DCCReference>
+        <DCCReference Include="uRSMainModule.pas">
+            <Form>RSMainModule</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
         </DCCReference>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
@@ -185,14 +188,26 @@
                     <Source Name="MainSource">RobustServer.dpr</Source>
                 </Source>
                 <Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\dcloffice2k230.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\dclofficexp230.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dcloffice2k260.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dclofficexp260.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
                 </Excluded_Packages>
             </Delphi.Personality>
             <Deployment Version="3">
+                <DeployFile LocalName="Win64\Debug\RobustServer.exe" Configuration="Debug" Class="ProjectOutput"/>
+                <DeployFile LocalName="Win64\Debug\RobustServer.exe" Configuration="Debug" Class="ProjectOutput">
+                    <Platform Name="Win64">
+                        <RemoteName>RobustServer.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="Win64\Debug\RobustServer.rsm" Configuration="Debug" Class="DebugSymbols"/>
                 <DeployFile LocalName="Win32\Debug\RobustServer.exe" Configuration="Debug" Class="ProjectOutput"/>
-                <DeployFile LocalName="Win64\Debug\RobustServer.exe" Configuration="Debug" Class="ProjectOutput"/>
+                <DeployFile LocalName="Win64\Debug\RobustServer.rsm" Configuration="Debug" Class="DebugSymbols">
+                    <Platform Name="Win64">
+                        <RemoteName>RobustServer.rsm</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployClass Name="AdditionalDebugSymbols">
                     <Platform Name="iOSSimulator">
                         <Operation>1</Operation>

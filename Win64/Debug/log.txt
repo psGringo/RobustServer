@@ -35,3 +35,5 @@
 11.10.2019 09:03:49.746 [инфо] Server successfully stopped
 11.10.2019 09:03:52.299 [инфо] Server successfully started
 11.10.2019 09:03:55.702 [инфо] Server successfully stopped
+12.10.2019 10:08:31.845 [инфо] Server successfully started
+12.10.2019 10:09:10.195 [инфо] Server successfully stopped

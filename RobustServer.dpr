@@ -9,7 +9,6 @@ uses
   Vcl.Styles,
   uTimers in 'uTimers.pas' {Timers: TDataModule},
   uRPMemory in 'RP\uRPMemory.pas',
-  LDSLogger in 'LDSLogger.pas',
   uCommon in 'uCommon.pas',
   uRPUsers in 'RP\uRPUsers.pas',
   uDecodePostRequest in 'uDecodePostRequest.pas',
@@ -19,12 +18,12 @@ uses
   uConst in 'uConst.pas',
   uRP in 'RP\uRP.pas',
   uRPTests in 'RP\uRPTests.pas',
-  uAttributes in 'uAttributes.pas',
   uRPFiles in 'RP\uRPFiles.pas',
   uRSService in 'uRSService.pas' {RobustService},
   Winapi.Windows {MainService: TDataModule},
   uRPSystem in 'RP\uRPSystem.pas',
-  System.SysUtils;
+  System.SysUtils,
+  uRSMainModule in 'uRSMainModule.pas' {RSMainModule: TDataModule};
 
 {$R *.res}
 
@@ -58,7 +57,7 @@ begin
     // If the mutex is a named mutex and the object existed before this function
     // call, the return value is a handle to the existing object, GetLastError
     // returns ERROR_ALREADY_EXISTS.
-  if (MutexHandle = 0) or  (ErrCode = ERROR_ALREADY_EXISTS) then
+  if (MutexHandle = 0) or (ErrCode = ERROR_ALREADY_EXISTS) then
   begin
     result := false;
     closeHandle(MutexHandle);
@@ -86,7 +85,8 @@ begin
     Vcl.Forms.Application.Initialize;
     Vcl.Forms.Application.MainFormOnTaskbar := True;
     TStyleManager.TrySetStyle('Charcoal Dark Slate');
-  Vcl.Forms.Application.CreateForm(TMain, Main);
+    Vcl.Forms.Application.CreateForm(TMain, Main);
+  Application.CreateForm(TRSMainModule, RSMainModule);
   Vcl.Forms.Application.Run;
   end
   else

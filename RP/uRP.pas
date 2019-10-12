@@ -4,8 +4,8 @@ unit uRP;
 interface
 
 uses
-  System.SysUtils, System.Classes, IdCustomHTTPServer, superobject, uCommon, uDB, System.Generics.Collections, System.Rtti, IdContext, uAttributes, System.Json, System.IOUtils,
-  uRSService;
+  System.SysUtils, System.Classes, IdCustomHTTPServer, superobject, uCommon, uDB, System.Generics.Collections, System.Rtti, IdContext, System.Json, System.IOUtils,
+  uRSService, uPSClasses;
 
 type
   TProcedure = reference to procedure;
