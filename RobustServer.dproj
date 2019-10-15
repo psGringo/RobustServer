@@ -1,6 +1,6 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <ProjectGuid>{4C186117-7B09-4F80-9522-99C23D8A4C05}</ProjectGuid>
+        <ProjectGuid>{1D11EF87-1221-4709-A114-3D80816A2056}</ProjectGuid>
         <ProjectVersion>18.5</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
         <MainSource>RobustServer.dpr</MainSource>
@@ -138,7 +138,7 @@
             <Form>Main</Form>
         </DCCReference>
         <DCCReference Include="uCommandGet.pas"/>
-        <DCCReference Include="uTimers.pas">
+        <DCCReference Include="uRSTimers.pas">
             <Form>Timers</Form>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
@@ -159,13 +159,15 @@
         <DCCReference Include="uRSService.pas">
             <Form>RobustService</Form>
         </DCCReference>
-        <DCCReference Include="RP\uRPSystem.pas">
-            <Form>$R *.res</Form>
-        </DCCReference>
+        <DCCReference Include="RP\uRPSystem.pas"/>
         <DCCReference Include="uRSMainModule.pas">
             <Form>RSMainModule</Form>
-            <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="RP\uRPRegistrations.pas"/>
+        <DCCReference Include="uRSGui.pas">
+            <Form>RSGui</Form>
+            <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

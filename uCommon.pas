@@ -5,7 +5,7 @@ interface
 uses
   LDSLogger, uConst, System.SysUtils, System.Classes, IdCustomHTTPServer, superobject, IdIOHandler, IdIOHandlerSocket, IdIOHandlerStack, IdSSL, IdSSLOpenSSL, IdMessage,
   IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient, IdExplicitTLSClientServerBase, IdMessageClient, IdSMTPBase, IdSMTP, IdMessageCoderMIME, IdMessageCoder, IdGlobal,
-  HTTPApp, vcl.Forms, System.NetEncoding, IdException, Winapi.Windows, uRSMainModule, uPSClasses;
+  HTTPApp, vcl.Forms, System.NetEncoding, IdException, Winapi.Windows, uPSClasses, uRSMainModule;
 
 type
   TEmail = class(TInterfacedObject)

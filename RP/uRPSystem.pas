@@ -4,7 +4,7 @@ interface
 
 uses
   uRP, System.SysUtils, System.Classes, IdCustomHTTPServer, superobject, uCommon, uDB, IdContext, System.NetEncoding, uAttributes, System.JSON, TypInfo, System.Rtti, System.IOUtils,
-  Winapi.PsAPI, Winapi.Windows, Math, IdHeaderList, uRSService, uMain, uRSMainModule, uPSClasses;
+  Winapi.PsAPI, Winapi.Windows, Math, IdHeaderList, uRSService, uRSMainModule, uPSClasses;
 
 type
   TRPSystem = class(TRP)

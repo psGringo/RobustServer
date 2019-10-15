@@ -7,7 +7,7 @@ uses
   uCommandGet in 'uCommandGet.pas',
   Vcl.Themes,
   Vcl.Styles,
-  uTimers in 'uTimers.pas' {Timers: TDataModule},
+  uRSTimers in 'uRSTimers.pas' {Timers: TDataModule},
   uRPMemory in 'RP\uRPMemory.pas',
   uCommon in 'uCommon.pas',
   uRPUsers in 'RP\uRPUsers.pas',
@@ -23,7 +23,9 @@ uses
   Winapi.Windows {MainService: TDataModule},
   uRPSystem in 'RP\uRPSystem.pas',
   System.SysUtils,
-  uRSMainModule in 'uRSMainModule.pas' {RSMainModule: TDataModule};
+  uRSMainModule in 'uRSMainModule.pas' {RSMainModule: TDataModule},
+  uRPRegistrations in 'RP\uRPRegistrations.pas',
+  uRSGui in 'uRSGui.pas' {RSGui: TFrame};
 
 {$R *.res}
 
@@ -86,8 +88,7 @@ begin
     Vcl.Forms.Application.MainFormOnTaskbar := True;
     TStyleManager.TrySetStyle('Charcoal Dark Slate');
     Vcl.Forms.Application.CreateForm(TMain, Main);
-  Application.CreateForm(TRSMainModule, RSMainModule);
-  Vcl.Forms.Application.Run;
+    Vcl.Forms.Application.Run;  //
   end
   else
   begin // service

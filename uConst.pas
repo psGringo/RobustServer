@@ -18,6 +18,9 @@ const
   DEFAULT_HTTP_PROTOCOL = 'http';
   DEFAULT_HTTP_HOST = 'localhost';
   DEFAULT_HTTP_PORT = '7777';
+  // GUI Request types
+  GUI_REQUEST_TYPE_GET = 0;
+  GUI_REQUEST_TYPE_POST = 1;
 
 implementation
 

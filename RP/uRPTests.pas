@@ -36,7 +36,7 @@ type
 implementation
 
 uses
-  idHTTP, IdMultipartFormData, uMain, Vcl.Dialogs;
+  idHTTP, IdMultipartFormData, Vcl.Dialogs;
 
 { TRPUsers }
 

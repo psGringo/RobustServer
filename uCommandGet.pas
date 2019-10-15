@@ -4,7 +4,7 @@ interface
 
 uses
   System.Classes, IdContext, IdCustomHTTPServer, System.Generics.Collections, superobject, System.NetEncoding, System.IOUtils, Vcl.Forms, uUniqueName, uDB, uCommon,
-  Spring.Collections, uRP, IdException, uPSClasses;
+  Spring.Collections, uRP, uRPRegistrations, IdException, uPSClasses, SyncObjs;
 
 type
   TCommandGet = class
@@ -12,12 +12,13 @@ type
     FContext: TIdContext;
     FRequestInfo: TIdHTTPRequestInfo;
     FResponseInfo: TIdHTTPResponseInfo;
-    FUniqueModuleNames: IDictionary<string, TRPClass>;
+    FCS: TCriticalSection;
+    FRPRegistrations: ISP<TRPRegistrations>;
     procedure ProcessRequest();
     function ParseFirstSection(): string;
     procedure DownloadFile;
   public
-    constructor Create(AContext: TIdContext; ARequestInfo: TIdHTTPRequestInfo; AResponseInfo: TIdHTTPResponseInfo);
+    constructor Create(AContext: TIdContext; ARequestInfo: TIdHTTPRequestInfo; AResponseInfo: TIdHTTPResponseInfo; aCs: TCriticalSection);
     procedure Execute();
     property Context: TIdContext read FContext write FContext;
     property RequestInfo: TIdHTTPRequestInfo read FRequestInfo write FRequestInfo;
@@ -30,19 +31,24 @@ uses
   uRPUsers, uRPTests, uRPFiles, uRPSystem, uDecodePostRequest, System.SysUtils, DateUtils, uConst;
 
 { TCommandGet }
-constructor TCommandGet.Create(AContext: TIdContext; ARequestInfo: TIdHTTPRequestInfo; AResponseInfo: TIdHTTPResponseInfo);
+
+constructor TCommandGet.Create(AContext: TIdContext; ARequestInfo: TIdHTTPRequestInfo; AResponseInfo: TIdHTTPResponseInfo; aCs: TCriticalSection);
 begin
   FContext := AContext;
   FRequestInfo := ARequestInfo;
   FResponseInfo := AResponseInfo;
-  FUniqueModuleNames := TCollections.CreateDictionary<string, TRPClass>;
-  // fill data
-  FUniqueModuleNames.Add(RP_Users, TRPUsers);
-  FUniqueModuleNames.Add(RP_Tests, TRPTests);
-  FUniqueModuleNames.Add(RP_Files, TRPFiles);
-//  FUniqueModuleNames.Add(RP_System, TRPSystem);
-  // fire
+
+  FRPRegistrations := TSP<TRPRegistrations>.Create();
+  FCS := aCs;
+
+  if Assigned(FCS) then
+    FCS.Enter;
+
+  FRPRegistrations.Assign(GlobalRPRegistrations);
   Execute();
+
+  if Assigned(FCS) then
+    FCS.Leave;
 end;
 
 procedure TCommandGet.DownloadFile();
@@ -86,8 +92,8 @@ var
   firstSection: string;
 begin
   firstSection := ParseFirstSection();
-  if FUniqueModuleNames.ContainsKey(firstSection) then
-    rp := TSP<TRP>.Create(FUniqueModuleNames.GetValueOrDefault(firstSection).Create(FContext, FRequestInfo, FResponseInfo));
+  if FRPRegistrations.RPClasses.ContainsKey(firstSection) then
+    rp := TSP<TRP>.Create(FRPRegistrations.RPClasses.GetValueOrDefault(firstSection).Create(FContext, FRequestInfo, FResponseInfo));
 end;
 
 end.
