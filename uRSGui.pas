@@ -60,11 +60,18 @@ type
     procedure UpdateWorkTime(var aMsg: TMessage); message WM_WORK_TIME;
     procedure SetStartStopGUI();
     procedure ProcessGetRequest();
+    procedure ProcessPostRequest();
+    procedure PostRequestApplicationJson();
+    procedure PostRequestUrlEncoded();
+    procedure PostRequestMultiPart();
   public
     constructor Create(aOwner: TComponent; aRSMainModule: TRSMainModule);
   end;
 
 implementation
+
+uses
+  superobject, IdMultipartFormData;
 
 {$R *.dfm}
 
@@ -96,9 +103,12 @@ end;
 
 procedure TRSGui.bFireClick(Sender: TObject);
 begin
-  if cbRequestType.ItemIndex = GUI_REQUEST_TYPE_GET then
-    ProcessGetRequest();
-
+  case cbRequestType.ItemIndex of
+    GUI_REQUEST_TYPE_GET:
+      ProcessGetRequest();
+    GUI_REQUEST_TYPE_POST:
+      ProcessPostRequest();
+  end;
 end;
 
 procedure TRSGui.UpdateAppMemory(var aMsg: TMessage);
@@ -152,6 +162,96 @@ begin
   SetGlyphsToButtons();
 end;
 
+procedure TRSGui.PostRequestApplicationJson;
+begin
+  TTHread.CreateAnonymousThread(
+    procedure()
+    var
+      r: string;
+      client: ISP<TIdHTTP>;
+      ss: ISP<TStringStream>;
+      jo: ISuperobject;
+    begin
+      client := TSP<TIdHTTP>.Create();
+      jo := SO(Trim(mPostParams.Lines.Text));
+      ss := TSP<TStringStream>.Create();
+      ss.WriteString(jo.AsJSon(false, false));
+      client.Request.ContentType := 'application/json';
+      client.Request.ContentEncoding := 'utf-8';
+      r := client.Post(FRSMainModule.Adress + '/' + cbRequest.Text, ss);
+      TThread.Synchronize(TThread.CurrentThread,
+        procedure()
+        begin
+          mAnswers.Lines.Add(r);
+          FRSMainModule.LastHttpRequests.AddToFirstPosition(cbRequest.Text);
+        end);
+    end).Start();
+end;
+
+procedure TRSGui.PostRequestMultiPart;
+begin
+  TTHread.CreateAnonymousThread(
+    procedure()
+    var
+      client: ISP<TIdHTTP>;
+      ss: ISP<TStringStream>;
+      fileName: string;
+      postData: ISP<TIdMultiPartFormDataStream>;
+      request: string;
+    begin
+      request := Format('%s/%s', [FRSMainModule.Adress, cbRequest.Text]);
+      ss := TSP<TStringStream>.Create();
+      client := TSP<TIdHTTP>.Create();
+          // multipart...
+      fileName := ExtractFileName(mPostParams.Lines[0]);
+      postData := TSP<TIdMultiPartFormDataStream>.Create();
+      client.Request.Referer := request;
+      client.Request.ContentType := 'multipart/form-data';
+      client.Request.RawHeaders.AddValue('AuthToken', System.NetEncoding.TNetEncoding.URL.Encode('evjTI82N'));
+      postData.AddFormField('filename', System.NetEncoding.TNetEncoding.URL.Encode(fileName));
+      postData.AddFormField('isOverwrite', System.NetEncoding.TNetEncoding.URL.Encode(mPostParams.Lines[1]));
+      postData.AddFile('attach', mPostParams.Lines[0], 'application/x-rar-compressed');
+      client.POST(request, postData, ss);
+      TThread.Synchronize(TThread.CurrentThread,
+        procedure()
+        begin
+          mAnswers.Lines.Add(ss.DataString);
+          FRSMainModule.LastHttpRequests.AddToFirstPosition(cbRequest.Text);
+        end);
+    end).Start();
+end;
+
+procedure TRSGui.PostRequestUrlEncoded;
+begin
+  TTHread.CreateAnonymousThread(
+    procedure()
+    var
+      r: string;
+      client: ISP<TIdHTTP>;
+      paramsSL: ISP<TStringList>;
+    begin
+      client := TSP<TIdHTTP>.Create();
+           //for test Send with 2 params on  Test/URLEncoded
+      paramsSL := TSP<TStringList>.Create();
+      paramsSL.Assign(mPostParams.Lines);
+            { or in code you can add params...
+             paramsSL.Add('a=UrlEncoded(aValue)')
+             paramsSL.Add('b=UrlEncoded(bValue)')
+            }
+      client.Request.ContentType := 'application/x-www-form-urlencoded';
+      client.Request.ContentEncoding := 'utf-8';
+
+      r := client.Post(FRSMainModule.Adress + '/' + cbRequest.Text, paramsSL);
+
+      TThread.Synchronize(TThread.CurrentThread,
+        procedure()
+        begin
+          mAnswers.Lines.Add(r);
+          FRSMainModule.LastHttpRequests.AddToFirstPosition(cbRequest.Text);
+        end);
+    end).Start();
+end;
+
 procedure TRSGui.ProcessGetRequest;
 begin
   TTHread.CreateAnonymousThread(
@@ -171,6 +271,20 @@ begin
           FRSMainModule.LastHttpRequests.AddToFirstPosition(cbRequest.Text);
         end);
     end).Start();
+end;
+
+procedure TRSGui.ProcessPostRequest;
+begin
+  case cbPostRequestType.ItemIndex of
+    GUI_REQUEST_TYPE_POST_APPLICATION_JSON:
+      PostRequestApplicationJson();
+
+    GUI_REQUEST_TYPE_POST_URL_ENCODED:
+      PostRequestUrlEncoded();
+
+    GUI_REQUEST_TYPE_POST_MULTIPART:
+      PostRequestMultiPart();
+  end;
 end;
 
 procedure TRSGui.SetGlyphsToButtons;
