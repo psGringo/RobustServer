@@ -59,7 +59,7 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
         <Icon_MainIcon>$(BDS)\bin\delphi_PROJECTICON.ico</Icon_MainIcon>
-        <Custom_Styles>&quot;Charcoal Dark Slate|VCLSTYLE|$(PUBLIC)\Documents\Embarcadero\Studio\17.0\Styles\CharcoalDarkSlate.vsf&quot;;&quot;Onyx Blue|VCLSTYLE|$(PUBLIC)\Documents\Embarcadero\Studio\17.0\Styles\OnyxBlue.vsf&quot;</Custom_Styles>
+        <Custom_Styles>&quot;Charcoal Dark Slate|VCLSTYLE|$(BDSCOMMONDIR)\Styles\CharcoalDarkSlate.vsf&quot;;Light|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Light.vsf;&quot;Onyx Blue|VCLSTYLE|$(BDSCOMMONDIR)\Styles\OnyxBlue.vsf&quot;</Custom_Styles>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;$(DCC_Namespace)</DCC_Namespace>
         <SanitizedProjectName>RobustServer</SanitizedProjectName>
         <DCC_DcuOutput>.\$(Platform)\$(Config)</DCC_DcuOutput>
@@ -196,13 +196,13 @@
             </Delphi.Personality>
             <Deployment Version="3">
                 <DeployFile LocalName="Win64\Debug\RobustServer.exe" Configuration="Debug" Class="ProjectOutput"/>
+                <DeployFile LocalName="Win64\Debug\RobustServer.rsm" Configuration="Debug" Class="DebugSymbols"/>
                 <DeployFile LocalName="Win64\Debug\RobustServer.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win64">
                         <RemoteName>RobustServer.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="Win64\Debug\RobustServer.rsm" Configuration="Debug" Class="DebugSymbols"/>
                 <DeployFile LocalName="Win32\Debug\RobustServer.exe" Configuration="Debug" Class="ProjectOutput"/>
                 <DeployFile LocalName="Win64\Debug\RobustServer.rsm" Configuration="Debug" Class="DebugSymbols">
                     <Platform Name="Win64">

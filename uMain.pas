@@ -6,8 +6,11 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, IdBaseComponent, IdComponent, IdCustomTCPServer,
   IdHTTPServer, Vcl.ComCtrls, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, uCommandGet, IdTCPConnection, IdTCPClient, IdCustomHTTPServer, IdContext, Vcl.Samples.Spin, System.ImageList,
   Vcl.ImgList, uCommon, System.Classes, superobject, IdHeaderList, ShellApi, Registry, uConst, System.SyncObjs, IdServerIOHandler, IdSSL, IdSSLOpenSSL, Vcl.AppEvnts, Vcl.Menus,
-  uPSClasses, uRPRegistrations, uRSMainModule, uRSGui,
   //
+  uPSClasses, //
+  uRPRegistrations, //
+  uRSMainModule, //
+  uRSGui, //
   uRP, //
   uRPUsers, //
   uRPTests, //

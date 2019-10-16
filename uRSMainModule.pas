@@ -44,10 +44,12 @@ type
     procedure KeepNoMoreCountRecords(aCount: integer);
     procedure Load();
     procedure Save();
+    function FindIndexOfKeyInIniSection(aSection: string; aKey: string): integer;
   public
     constructor Create(aFilePathSettings: string);
     destructor Destroy; override;
     procedure AddToFirstPosition(aRequest: string);
+    procedure Delete(aRequest: string);
     property Data: TStringList read FData;
   end;
 
@@ -345,7 +347,7 @@ begin
   currentIndex := FData.IndexOf(aRequest);
   isRequestFound := currentIndex <> -1;
 
-  if (isRequestFound) and (currentIndex <> 0) then
+  if (isRequestFound) then
     FData.Exchange(currentIndex, 0)
   else
     FData.Insert(0, aRequest);
@@ -364,7 +366,25 @@ begin
   Load();
 
   if FData.Count = 0 then
-    FData.Add('Test/Connection')
+    FData.Add('Tests/Connection')
+end;
+
+procedure TLastHttpRequests.Delete(aRequest: string);
+var
+  currentIndex: integer;
+  ini: ISP<TIniFile>;
+  sectionName: string;
+begin
+  currentIndex := FData.IndexOf(aRequest);
+  if currentIndex = -1 then
+    Exit;
+
+  FData.Delete(currentIndex);
+
+  // delete from ini
+  ini := TSP<Tinifile>.Create(Tinifile.Create(FFilePath));
+  sectionName := Format('lastRequest%s', [currentIndex.ToString()]);
+  ini.DeleteKey('lastRequests', sectionName);
 end;
 
 destructor TLastHttpRequests.Destroy;
@@ -372,6 +392,28 @@ begin
   Save();
   FData.Free();
   inherited;
+end;
+
+function TLastHttpRequests.FindIndexOfKeyInIniSection(aSection, aKey: string): integer;
+var
+  count: integer;
+  ini: ISP<TIniFile>;
+  i: Integer;
+  itemResult: string;
+begin
+  Result := -1;
+
+  ini := TSP<Tinifile>.Create(Tinifile.Create(FFilePath));
+  count := ini.ReadInteger('lastRequests', 'count', 0);
+  for i := 0 to count - 1 do
+  begin
+    itemResult := ini.ReadString(aSection, aKey, 'not found');
+    if itemResult = aKey then
+    begin
+      Result := i;
+      Exit;
+    end;
+  end;
 end;
 
 procedure TLastHttpRequests.KeepNoMoreCountRecords(aCount: integer);
@@ -393,13 +435,21 @@ var
   count: integer;
   i: integer;
   sectionName: string;
+  item: string;
+  notFound: string;
 begin
   ini := TSP<Tinifile>.Create(Tinifile.Create(FFilePath));
-  count := ini.ReadInteger('lastRequests', 'count', 0);
-  for i := 0 to count - 1 do
+
+  i := 0;
+  notFound := 'not found';
+
+  while item <> notFound do
   begin
     sectionName := Format('lastRequest%s', [i.ToString()]);
-    FData.Add(ini.ReadString('lastRequests', sectionName, '<None>'));
+    item := ini.ReadString('lastRequests', sectionName, notFound);
+    if item <> notFound then
+      FData.Add(item);
+    Inc(i);
   end;
 end;
 
@@ -418,8 +468,6 @@ begin
     sectionName := Format('lastRequest%s', [i.ToString()]);
     ini.WriteString('lastRequests', sectionName, FData[i]);
   end;
-
-  ini.WriteInteger('lastRequests', 'count', FData.Count);
 end;
 
 { TSettingsFile }

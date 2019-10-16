@@ -27,21 +27,35 @@ type
     cbPostRequestType: TComboBox;
     pRequest: TPanel;
     bFire: TBitBtn;
-    eUrlEncode: TEdit;
-    bUrlEncode: TBitBtn;
-    mAnswers: TMemo;
     ilPics: TImageList;
     bSettings: TBitBtn;
     bApi: TBitBtn;
     bLog: TBitBtn;
-    bClearAnswers: TBitBtn;
     cbRequest: TComboBox;
+    pPostParams: TPanel;
+    pPostParamsTop: TPanel;
+    mPostParams: TMemo;
+    pAnswers: TPanel;
+    pAnswersTop: TPanel;
+    mAnswers: TMemo;
+    bClearPostParams: TBitBtn;
+    bClearAnswers: TBitBtn;
+    bClearRequest: TBitBtn;
+    bUrlEncode: TBitBtn;
+    pUrlEncode: TPanel;
+    bDoEncode: TBitBtn;
+    eUrlEncode: TEdit;
     procedure bStartStopClick(Sender: TObject);
-    procedure bUrlEncodeClick(Sender: TObject);
+    procedure bDoEncodeClick(Sender: TObject);
     procedure cbRequestTypeSelect(Sender: TObject);
     procedure bFireClick(Sender: TObject);
+    procedure bClearAnswersClick(Sender: TObject);
+    procedure bClearPostParamsClick(Sender: TObject);
+    procedure bClearRequestClick(Sender: TObject);
+    procedure bUrlEncodeClick(Sender: TObject);
   private
     FRSMainModule: TRSMainModule;
+    procedure SetGlyphsToButtons();
     procedure UpdateAppMemory(var aMsg: TMessage); message WM_APP_MEMORY;
     procedure UpdateWorkTime(var aMsg: TMessage); message WM_WORK_TIME;
     procedure SetStartStopGUI();
@@ -55,6 +69,30 @@ implementation
 {$R *.dfm}
 
 { TRSGui }
+
+procedure TRSGui.bClearAnswersClick(Sender: TObject);
+begin
+  mAnswers.Clear();
+end;
+
+procedure TRSGui.bClearPostParamsClick(Sender: TObject);
+begin
+  mPostParams.Clear();
+end;
+
+procedure TRSGui.bClearRequestClick(Sender: TObject);
+var
+  nextIndex: integer;
+begin
+  FRSMainModule.LastHttpRequests.Delete(cbRequest.Text);
+
+  nextIndex := -1;
+  if cbRequest.ItemIndex + 1 < cbRequest.Items.Count - 1 then
+    nextIndex := cbRequest.ItemIndex + 1;
+
+  cbRequest.Items.Delete(cbRequest.ItemIndex);
+  cbRequest.ItemIndex := nextIndex;
+end;
 
 procedure TRSGui.bFireClick(Sender: TObject);
 begin
@@ -81,12 +119,19 @@ end;
 
 procedure TRSGui.bUrlEncodeClick(Sender: TObject);
 begin
+  eUrlEncode.Visible := not eUrlEncode.Visible;
+  bDoEncode.Visible := not bDoEncode.Visible;
+end;
+
+procedure TRSGui.bDoEncodeClick(Sender: TObject);
+begin
   eUrlEncode.Text := TNetEncoding.URL.Encode(eUrlEncode.Text);
 end;
 
 procedure TRSGui.cbRequestTypeSelect(Sender: TObject);
 begin
   cbPostRequestType.Visible := cbRequestType.ItemIndex = GUI_REQUEST_TYPE_POST;
+  pPostParams.Visible := cbRequestType.ItemIndex = GUI_REQUEST_TYPE_POST;
 end;
 
 constructor TRSGui.Create(aOwner: TComponent; aRSMainModule: TRSMainModule);
@@ -104,16 +149,7 @@ begin
   cbRequest.ItemIndex := 0;
 
   SetStartStopGUI();
-  // fire button
-  bFire.Glyph := nil;
-  ilPics.GetBitmap(7, bFire.Glyph);
-  // settings
-  bSettings.Glyph := nil;
-  ilPics.GetBitmap(5, bSettings.Glyph);
-  // clearAnswers
-  bClearAnswers.Glyph := nil;
-  ilPics.GetBitmap(3, bClearAnswers.Glyph);
-  //
+  SetGlyphsToButtons();
 end;
 
 procedure TRSGui.ProcessGetRequest;
@@ -135,6 +171,25 @@ begin
           FRSMainModule.LastHttpRequests.AddToFirstPosition(cbRequest.Text);
         end);
     end).Start();
+end;
+
+procedure TRSGui.SetGlyphsToButtons;
+begin
+  // fire button
+  bFire.Glyph := nil;
+  ilPics.GetBitmap(7, bFire.Glyph);
+  // settings
+  bSettings.Glyph := nil;
+  ilPics.GetBitmap(5, bSettings.Glyph);
+  // clearAnswers
+  bClearAnswers.Glyph := nil;
+  ilPics.GetBitmap(3, bClearAnswers.Glyph);
+  // clear post params
+  bClearPostParams.Glyph := nil;
+  ilPics.GetBitmap(3, bClearPostParams.Glyph);
+  // clear request
+  bClearRequest.Glyph := nil;
+  ilPics.GetBitmap(8, bClearRequest.Glyph);
 end;
 
 procedure TRSGui.SetStartStopGUI;

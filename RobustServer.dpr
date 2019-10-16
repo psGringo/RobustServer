@@ -86,8 +86,8 @@ begin
   begin
     Vcl.Forms.Application.Initialize;
     Vcl.Forms.Application.MainFormOnTaskbar := True;
-    TStyleManager.TrySetStyle('Charcoal Dark Slate');
-    Vcl.Forms.Application.CreateForm(TMain, Main);
+    TStyleManager.TrySetStyle('Light');
+  Vcl.Forms.Application.CreateForm(TMain, Main);
     Vcl.Forms.Application.Run;  //
   end
   else
