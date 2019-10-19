@@ -3,11 +3,7 @@ unit uRPRegistrations;
 interface
 
 uses
-  uPSClasses, //
-  System.Classes, //
-  Spring.Collections, //
-  uRP, Spring, uConst //
-;
+  uPSClasses, System.Classes, Spring.Collections, uRP, Spring, uRSConst;
 
 type
   TRPRegistrations = class

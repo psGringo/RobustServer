@@ -4,7 +4,7 @@ unit uUniqueName;
 interface
 
 uses
-  System.SysUtils, System.Classes, vcl.dialogs, System.RegularExpressions, StrUtils, uCommon, System.IOUtils, Vcl.Forms, uPSClasses;
+  System.SysUtils, System.Classes, vcl.dialogs, System.RegularExpressions, StrUtils, uRSCommon, System.IOUtils, Vcl.Forms, uPSClasses;
 
 type
   TUniqueName = class(TDataModule)

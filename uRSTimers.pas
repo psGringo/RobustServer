@@ -30,7 +30,7 @@ type
 implementation
 
 uses
-  Winapi.Windows, Winapi.Messages, uRPSystem, superobject, uCommon, uRSMainModule, uRSGui;
+  Winapi.Windows, Winapi.Messages, uRPSystem, superobject, uRSCommon, uRSMainModule, uRSGui;
 
 {%CLASSGROUP 'Vcl.Controls.TControl'}
 

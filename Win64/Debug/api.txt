@@ -53,8 +53,6 @@ TRPTests
 
   Sessions | GET
 
-  PingContext | GET
-
   MethodWithParams | GET
     aParam1: string
     aParam2: string

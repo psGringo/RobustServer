@@ -4,15 +4,11 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls,
-  Vcl.ComCtrls, System.ImageList, Vcl.ImgList, System.NetEncoding, IdHTTP,
+  Vcl.ComCtrls, System.ImageList, Vcl.ImgList, System.NetEncoding, IdHTTP, ShellApi, uRSCommon,
   //
   uRSMainModule, //
   uPSClasses, //
-  uConst;
-
-const
-  WM_WORK_TIME = WM_USER + 1000;
-  WM_APP_MEMORY = WM_USER + 1001;
+  uRSConst;
 
 type
   TRSGui = class(TFrame)
@@ -53,6 +49,9 @@ type
     procedure bClearPostParamsClick(Sender: TObject);
     procedure bClearRequestClick(Sender: TObject);
     procedure bUrlEncodeClick(Sender: TObject);
+    procedure bSettingsClick(Sender: TObject);
+    procedure bApiClick(Sender: TObject);
+    procedure bLogClick(Sender: TObject);
   private
     FRSMainModule: TRSMainModule;
     procedure SetGlyphsToButtons();
@@ -76,6 +75,17 @@ uses
 {$R *.dfm}
 
 { TRSGui }
+
+procedure TRSGui.bApiClick(Sender: TObject);
+var
+  c: ISP<TIdHTTP>;
+  filePathApi: string;
+begin
+  c := TSP<TIdHTTP>.Create();
+  c.Get(Format('%s/System/Api', [FRSMainModule.Adress]));
+  filePathApi := Format('%s%s', [ExtractFilePath(Application.ExeName), API_FILE_NAME]);
+  ShellExecute(Handle, 'open', 'c:\windows\notepad.exe', PWideChar(filePathApi), nil, SW_SHOWNORMAL);
+end;
 
 procedure TRSGui.bClearAnswersClick(Sender: TObject);
 begin
@@ -111,6 +121,14 @@ begin
   end;
 end;
 
+procedure TRSGui.bLogClick(Sender: TObject);
+var
+  filePathLog: string;
+begin
+  filePathLog := Format('%s%s', [ExtractFilePath(Application.ExeName), LOG_FILE_NAME]);
+  ShellExecute(Handle, 'open', 'c:\windows\notepad.exe', PWideChar(filePathLog), nil, SW_SHOWNORMAL);
+end;
+
 procedure TRSGui.UpdateAppMemory(var aMsg: TMessage);
 begin
   StatusBar.Panels[2].Text := PChar(aMsg.LParam);
@@ -119,6 +137,14 @@ end;
 procedure TRSGui.UpdateWorkTime(var aMsg: TMessage);
 begin
   StatusBar.Panels[1].Text := PChar(aMsg.LParam);
+end;
+
+procedure TRSGui.bSettingsClick(Sender: TObject);
+var
+  filePathSettings: string;
+begin
+  filePathSettings := Format('%s%s', [ExtractFilePath(Application.ExeName), SETTINGS_FILE_NAME]);
+  ShellExecute(Handle, 'open', 'c:\windows\notepad.exe', PWideChar(filePathSettings), nil, SW_SHOWNORMAL);
 end;
 
 procedure TRSGui.bStartStopClick(Sender: TObject);

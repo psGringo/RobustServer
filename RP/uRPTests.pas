@@ -3,7 +3,7 @@ unit uRPTests;
 interface
 
 uses
-  System.SysUtils, System.Types, System.Classes, IdCustomHTTPServer, superobject, uCommon, uDB, uRP, IdContext, System.NetEncoding, uAttributes, System.JSON, SyncObjs, uConst, uRSMainModule;
+  System.SysUtils, System.Types, System.Classes, IdCustomHTTPServer, superobject, uRSCommon, uDB, uRP, IdContext, System.NetEncoding, uAttributes, System.JSON, SyncObjs, uRSConst, uRSMainModule;
 
 type
   TRPTests = class(TRP)
@@ -21,7 +21,6 @@ type
     procedure SimplePostRequest(a, b: string);
     procedure URLEncoded(a, b: string);
     procedure Sessions;
-    function PingContext: string;
     procedure MethodWithParams(aParam1: string; aParam2: string);
     [THTTPAttributes('HttpGet')]
     procedure HTTPAttribute(); overload;
@@ -128,11 +127,6 @@ begin
   json := SO;
   json.S['commandType'] := 'GET';
   FResponses.OkWithJson(json.AsJSon(false, false));
-end;
-
-function TRPTests.PingContext: string;
-begin
-//
 end;
 
 procedure TRPTests.PostJson;

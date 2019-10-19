@@ -3,7 +3,7 @@ unit uRPSystem;
 interface
 
 uses
-  uRP, System.SysUtils, System.Classes, IdCustomHTTPServer, superobject, uCommon, uDB, IdContext, System.NetEncoding, uAttributes, System.JSON, TypInfo, System.Rtti, System.IOUtils,
+  uRP, System.SysUtils, System.Classes, IdCustomHTTPServer, superobject, uRSCommon, uDB, IdContext, System.NetEncoding, uAttributes, System.JSON, TypInfo, System.Rtti, System.IOUtils,
   Winapi.PsAPI, Winapi.Windows, Math, IdHeaderList, uRSService, uRSMainModule, uPSClasses;
 
 type

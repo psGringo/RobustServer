@@ -25,7 +25,7 @@ implementation
 
 uses
   idHTTP, System.Classes, IdMultipartFormData, superobject,uMain,
-  System.SysUtils, System.NetEncoding, uCommon, Vcl.Dialogs, uPSClasses;
+  System.SysUtils, System.NetEncoding, uRSCommon, Vcl.Dialogs, uPSClasses;
 
 { TClientRequestExamples }
 

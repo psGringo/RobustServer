@@ -6,7 +6,7 @@ uses
   System.SysUtils, System.Variants, System.Classes, Vcl.Graphics, Vcl.Controls,
   Vcl.Forms, Vcl.Dialogs, IdBaseComponent, IdComponent, IdCustomTCPServer,
   IdCustomHTTPServer, IdHTTPServer, Vcl.StdCtrls, HTTPApp, IdMultipartFormData,
-  IdContext, System.IOUtils, System.NetEncoding, superobject, Contnrs, uCommon,
+  IdContext, System.IOUtils, System.NetEncoding, superobject, Contnrs, uRSCommon,
   System.Generics.Collections, DateUtils, uUniqueName, uPSClasses;
 
 type

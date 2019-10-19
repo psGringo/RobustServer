@@ -5,7 +5,7 @@ interface
 
 uses
   System.SysUtils, System.Classes, IdCustomHTTPServer, superobject,
-  uCommon, uDB, uRP, IdContext;
+  uRSCommon, uDB, uRP, IdContext;
 
 type
   TRPUsers = class(TRP)

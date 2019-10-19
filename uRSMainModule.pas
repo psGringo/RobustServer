@@ -4,10 +4,7 @@ interface
 
 uses
   System.SysUtils, System.Classes, SyncObjs, IdContext, IdCustomHTTPServer, System.ImageList, Vcl.ImgList, Vcl.Controls, IdCustomTCPServer, IdHTTPServer, IdBaseComponent,
-  IdComponent, IdServerIOHandler, IdSSL, IdSSLOpenSSL, uRSService, System.IOUtils, LDSLogger, IniFiles, uConst, VCL.Forms,
-  //
-  uPSClasses, //
-  uRSTimers;
+  IdComponent, IdServerIOHandler, IdSSL, IdSSLOpenSSL, uRSService, System.IOUtils, LDSLogger, IniFiles, uRSConst, VCL.Forms, uRSCommon, uPSClasses, uRSTimers;
 
 type
   THttpProtocolSettings = class
@@ -17,22 +14,24 @@ type
     FPort: integer;
     FAdress: string;
     FFilePathSettings: string;
+    function HttpProtocolToString(aHttpProtocol: THttpProtocol): string;
     procedure ReadSettingsFromFile();
     procedure WriteDefaultSettingsToFile();
+    procedure WriteSettingsToFile();
   public
-    constructor Create(aFilePathSettings: string; aIsCreatedNewSettingsFile: Boolean);
+    constructor Create(aFilePathSettings: string; aIsCreatedNewSettingsFile: Boolean; aProtocol: THttpProtocol; aPort: integer);
     property Port: integer read FPort;
     property Adress: string read FAdress;
   end;
 
   TSettingsFile = class
   private
-    FHttpProtocol: ISP<THttpProtocolSettings>;
+    FHttpProtocolSettings: ISP<THttpProtocolSettings>;
     FWasCreatedNewFile: Boolean;
     FServer: TIdHTTPServer;
   public
-    constructor Create(aSettingsFilePath: string; aServer: TIdHTTPServer);
-    property HttpProtocol: ISP<THttpProtocolSettings> read FHttpProtocol;
+    constructor Create(aSettingsFilePath: string; aServer: TIdHTTPServer; aProtocol: THttpProtocol; aPort: integer);
+    property HttpProtocol: ISP<THttpProtocolSettings> read FHttpProtocolSettings;
     function GetAdress(): string;
   end;
 
@@ -68,11 +67,12 @@ type
     FOnStart: TNotifyEvent;
     FOnStop: TNotifyEvent;
     FRSGui: TObject;
+    FName: string;
     function GetAdress(): string;
     procedure PostRequestProcessing();
     procedure SetRSGui(const Value: TObject);
   public
-    constructor Create(aOwner: TComponent; aIsStartOnCreate: Boolean);
+    constructor Create(aOwner: TComponent; aIsStartOnCreate: Boolean = true; aProtocol: THttpProtocol = hpHTTP; aPort: integer = DEFAULT_HTTP_PORT);
     destructor Destroy; override;
     procedure ToggleStartStop();
     procedure Start;
@@ -98,19 +98,20 @@ implementation
 {$R *.dfm}
 
 uses
-  uCommon, uCommandGet, uRSGui;
+  uCommandGet, uRSGui;
 
 { TRSMainModule }
 
-constructor TRSMainModule.Create(aOwner: TComponent; aIsStartOnCreate: Boolean);
+constructor TRSMainModule.Create(aOwner: TComponent; aIsStartOnCreate: Boolean = true; aProtocol: THttpProtocol = hpHTTP; aPort: integer = DEFAULT_HTTP_PORT);
 var
   filePathSettings: string;
+  guid: TGuid;
 begin
   inherited Create(aOwner);
 
   filePathSettings := ExtractFilePath(Application.ExeName) + SETTINGS_FILE_NAME;
 
-  FSettingsFile := TSP<TSettingsFile>.Create(TSettingsFile.Create(filePathSettings, Server));
+  FSettingsFile := TSP<TSettingsFile>.Create(TSettingsFile.Create(filePathSettings, Server, aProtocol, aPort));
   FLastHttpRequests := TSP<TLastHttpRequests>.Create(TLastHttpRequests.Create(filePathSettings));
   FTimers := TTimers.Create(Self, true);
   FLongTaskThreads := TSP<TThreadList>.Create();
@@ -217,6 +218,17 @@ end;
 
 { FHttpProtocolSettings }
 
+function THttpProtocolSettings.HttpProtocolToString(aHttpProtocol: THttpProtocol): string;
+begin
+  if aHttpProtocol = hpHTTP then
+    Result := 'http'
+  else if aHttpProtocol = hpHTTPs then
+    Result := 'https'
+  else
+
+
+end;
+
 procedure THttpProtocolSettings.ReadSettingsFromFile();
 var
   ini: ISP<TIniFile>;
@@ -234,18 +246,35 @@ begin
   ini := TSP<Tinifile>.Create(Tinifile.Create(FFIlePathSettings));
   ini.WriteString('server', 'protocol', DEFAULT_HTTP_PROTOCOL);
   ini.WriteString('server', 'host', DEFAULT_HTTP_HOST);
-  ini.WriteString('server', 'port', DEFAULT_HTTP_PORT);
+  ini.WriteString('server', 'port', DEFAULT_HTTP_PORT.ToString());
 end;
 
+procedure THttpProtocolSettings.WriteSettingsToFile;
+var
+  ini: ISP<TIniFile>;
+begin
+  ini := TSP<Tinifile>.Create(Tinifile.Create(FFIlePathSettings));
+  ini.WriteString('server', 'protocol', FProtocol);
+  ini.WriteString('server', 'host', DEFAULT_HTTP_HOST);
+  ini.WriteString('server', 'port', FPort.ToString());
+end;
 
 { THttpProtocolSettings }
 
-constructor THttpProtocolSettings.Create(aFilePathSettings: string; aIsCreatedNewSettingsFile: Boolean);
+constructor THttpProtocolSettings.Create(aFilePathSettings: string; aIsCreatedNewSettingsFile: Boolean; aProtocol: THttpProtocol; aPort: integer);
 begin
   FFIlePathSettings := aFilePathSettings;
 
+  FProtocol := HttpProtocolToString(aProtocol);
+  FPort := aPort;
+
   if aIsCreatedNewSettingsFile then
-    WriteDefaultSettingsToFile();
+  begin
+    if (FProtocol <> '') and (FPort <> -1) then
+      WriteSettingsToFile()
+    else
+      WriteDefaultSettingsToFile()
+  end;
 
   ReadSettingsFromFile();
 
@@ -390,7 +419,7 @@ end;
 
 { TSettingsFile }
 
-constructor TSettingsFile.Create(aSettingsFilePath: string; aServer: TIdHTTPServer);
+constructor TSettingsFile.Create(aSettingsFilePath: string; aServer: TIdHTTPServer; aProtocol: THttpProtocol; aPort: integer);
 var
   validator: ISP<TParamValidator>;
 begin
@@ -404,13 +433,13 @@ begin
     TFile.Create(aSettingsFilePath);
   end;
 
-  FHttpProtocol := TSP<THttpProtocolSettings>.Create(THttpProtocolSettings.Create(aSettingsFilePath, FWasCreatedNewFile));
-  aServer.DefaultPort := FHttpProtocol.Port;
+  FHttpProtocolSettings := TSP<THttpProtocolSettings>.Create(THttpProtocolSettings.Create(aSettingsFilePath, FWasCreatedNewFile, aProtocol, aPort));
+  aServer.DefaultPort := FHttpProtocolSettings.Port;
 end;
 
 function TSettingsFile.GetAdress: string;
 begin
-  Result := FHttpProtocol.Adress;
+  Result := FHttpProtocolSettings.Adress;
 end;
 
 end.

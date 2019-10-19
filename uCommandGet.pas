@@ -3,7 +3,7 @@ unit uCommandGet;
 interface
 
 uses
-  System.Classes, IdContext, IdCustomHTTPServer, System.Generics.Collections, superobject, System.NetEncoding, System.IOUtils, Vcl.Forms, uUniqueName, uDB, uCommon,
+  System.Classes, IdContext, IdCustomHTTPServer, System.Generics.Collections, superobject, System.NetEncoding, System.IOUtils, Vcl.Forms, uUniqueName, uDB, uRSCommon,
   Spring.Collections, uRP, uRPRegistrations, IdException, uPSClasses, SyncObjs;
 
 type
@@ -28,7 +28,7 @@ type
 implementation
 
 uses
-  uRPUsers, uRPTests, uRPFiles, uRPSystem, uDecodePostRequest, System.SysUtils, DateUtils, uConst;
+  uRPUsers, uRPTests, uRPFiles, uRPSystem, uDecodePostRequest, System.SysUtils, DateUtils, uRSConst;
 
 { TCommandGet }
 

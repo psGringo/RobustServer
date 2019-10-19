@@ -143,7 +143,7 @@
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
         <DCCReference Include="RP\uRPMemory.pas"/>
-        <DCCReference Include="uCommon.pas"/>
+        <DCCReference Include="uRSCommon.pas"/>
         <DCCReference Include="RP\uRPUsers.pas"/>
         <DCCReference Include="uDecodePostRequest.pas"/>
         <DCCReference Include="uUniqueName.pas"/>
@@ -152,7 +152,7 @@
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
         <DCCReference Include="uClientExamples.pas"/>
-        <DCCReference Include="uConst.pas"/>
+        <DCCReference Include="uRSConst.pas"/>
         <DCCReference Include="RP\uRP.pas"/>
         <DCCReference Include="RP\uRPTests.pas"/>
         <DCCReference Include="RP\uRPFiles.pas"/>
@@ -169,6 +169,7 @@
             <Form>RSGui</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
+        <DCCReference Include="uRSServers.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

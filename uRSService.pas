@@ -3,8 +3,7 @@ unit uRSService;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.SvcMgr, Vcl.Dialogs,
-  Vcl.Forms;
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.SvcMgr, Vcl.Dialogs, Vcl.Forms;
 
 type
   TRobustService = class(TService)
@@ -25,7 +24,8 @@ var
 
 implementation
 
-uses uRSMainModule;
+uses
+  uRSMainModule;
 
 {%CLASSGROUP 'Vcl.Controls.TControl'}
 {$R *.dfm}
@@ -44,7 +44,7 @@ end;
 
 procedure TRobustService.ServiceCreate(Sender: TObject);
 begin
-   FMainInstance := TRSMainModule.Create(Self, true);
+  FMainInstance := TRSMainModule.Create(Self, true);
 end;
 
 procedure TRobustService.ServiceStart(Sender: TService; var Started: Boolean);
@@ -58,7 +58,6 @@ begin
   TRSMainModule(FMainInstance).Stop();
   Stopped := true;
 end;
-
 
 end.
 

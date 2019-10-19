@@ -3,7 +3,7 @@ unit uRPFiles;
 interface
 
 uses
-  System.SysUtils, System.Classes, IdCustomHTTPServer, superobject, uCommon, uDB,
+  System.SysUtils, System.Classes, IdCustomHTTPServer, superobject, uRSCommon, uDB,
   uRP, IdContext, System.NetEncoding, uAttributes, System.JSON;
 
 type
